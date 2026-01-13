@@ -29,7 +29,7 @@ export default function Home() {
 
         {/* Title (Emoji Removed) */}
         <h1 className="text-5xl md:text-7xl font-bold text-white tracking-tight drop-shadow-lg">
-         Itinera
+         ITINERA
         </h1>
         
         <p className="text-lg md:text-xl text-gray-200 mt-6 leading-relaxed max-w-lg mx-auto">
