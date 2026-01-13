@@ -33,7 +33,8 @@ app.use(
 );
 
 // ✅ MUST allow preflight
-app.options("*", cors());
+app.options(/.*/, cors());
+
 
 
 // ✅ Routes
