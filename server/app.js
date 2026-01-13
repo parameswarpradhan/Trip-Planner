@@ -23,6 +23,8 @@ const allowedOrigins = [
   "http://localhost:5173",
 ].filter(Boolean);
 
+console.log("✅ Allowed origins:", allowedOrigins);
+
 // ✅ IMPORTANT: apply CORS globally, including error responses
 app.use(
   cors({
@@ -39,6 +41,8 @@ app.use(
     credentials: false,
   })
 );
+
+
 
 // ✅ Preflight
 app.options(/.*/, cors());
