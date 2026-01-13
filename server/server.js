@@ -3,20 +3,20 @@ dotenv.config();
 
 import app from "./app.js";
 import { connectDB } from "./config/db.js";
-import { env, validateEnv } from "./config/env.js";
-console.log("DEBUG ENV:", process.env.MONGO_URI, process.env.GEMINI_API_KEY, process.env.CLIENT_URL);
-
+import { validateEnv } from "./config/env.js";
 
 async function start() {
   validateEnv();
   await connectDB();
 
-  app.listen(env.PORT, () => {
-    console.log(`✅ Server running:    ${env.PORT}`);
+  const PORT = process.env.PORT || 5000; // ✅ Render uses process.env.PORT
+
+  app.listen(PORT, () => {
+    console.log(`✅ Server running on port ${PORT}`);
   });
 }
 
 start().catch((err) => {
-  console.error(err);
+  console.error("❌ Failed to start server:", err);
   process.exit(1);
 });
