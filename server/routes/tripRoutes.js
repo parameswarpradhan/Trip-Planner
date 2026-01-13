@@ -1,16 +1,21 @@
-import { Router } from "express";
-import { planTrip, getTrip, regenerateDay } from "../controllers/tripController.js";
-import { aiRateLimiter } from "../middlewares/rateLimitMiddleware.js";
-import {addCustomPlace } from "../controllers/tripController.js";
+import express from "express";
+import {
+  planTrip,
+  getTrip,
+  regenerateDay,
+  addCustomPlace,
+} from "../controllers/tripController.js";
 
-const router = Router();
+const router = express.Router();
 
-router.post("/plan", aiRateLimiter, planTrip);
-router.get("/:tripId", getTrip);
+// ✅ IMPORTANT: static routes first
+router.post("/plan", planTrip);
 
-// ✅ NEW: regenerate only one day
-router.post("/:tripId/regenerate-day", aiRateLimiter, regenerateDay);
+// optional features
+router.post("/:tripId/regenerate-day", regenerateDay);
 router.post("/:tripId/add-place", addCustomPlace);
 
+// ✅ dynamic route LAST
+router.get("/:tripId", getTrip);
 
 export default router;
