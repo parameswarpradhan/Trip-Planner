@@ -19,37 +19,22 @@ app.use(cookieParser());
 
 // ✅ Allow Vercel + Localhost
 const allowedOrigins = [
-  process.env.CLIENT_URL, // your Vercel URL
+  process.env.CLIENT_URL,
   "http://localhost:5173",
+  "https://trip-planner-vert.vercel.app"
 ].filter(Boolean);
 
-console.log("✅ Allowed origins:", allowedOrigins);
-
-// ✅ IMPORTANT: apply CORS globally, including error responses
 app.use(
   cors({
-    origin: (origin, cb) => {
-      if (!origin) return cb(null, true);
-
-      const isLocalhost = origin === "http://localhost:5173";
-      const isVercelPreview =
-        origin.endsWith(".vercel.app") &&
-        origin.includes("parameswar-pradhans-projects");
-
-      const isExactClient = origin === process.env.CLIENT_URL;
-
-      if (isLocalhost || isExactClient || isVercelPreview) {
-        return cb(null, true);
-      }
-
-      return cb(new Error("CORS blocked for origin: " + origin), false);
-    },
+    origin: allowedOrigins,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
-app.options(/.*/, cors());
+// ✅ MUST allow preflight
+app.options("*", cors());
+
 
 // ✅ Routes
 app.use("/health", healthRoutes);
