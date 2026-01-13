@@ -17,23 +17,37 @@ app.use(morgan("dev"));
 app.use(express.json({ limit: "1mb" }));
 app.use(cookieParser());
 
-// ✅ CORS
+// ✅ Allow Vercel + Localhost
+const allowedOrigins = [
+  process.env.CLIENT_URL, // your Vercel URL
+  "http://localhost:5173",
+].filter(Boolean);
+
+// ✅ IMPORTANT: apply CORS globally, including error responses
 app.use(
   cors({
-    origin: process.env.CLIENT_URL,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    origin: (origin, cb) => {
+      // allow curl/postman (no origin)
+      if (!origin) return cb(null, true);
+
+      if (allowedOrigins.includes(origin)) return cb(null, true);
+
+      return cb(new Error("CORS blocked for origin: " + origin), false);
+    },
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: false,
   })
 );
 
+// ✅ Preflight
 app.options(/.*/, cors());
-
 
 // ✅ Routes
 app.use("/health", healthRoutes);
 app.use("/api/trips", tripRoutes);
 
-// ✅ Error middlewares MUST be at the end
+// ✅ Errors last
 app.use(notFound);
 app.use(errorHandler);
 
