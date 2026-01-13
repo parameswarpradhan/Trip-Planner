@@ -29,22 +29,26 @@ console.log("✅ Allowed origins:", allowedOrigins);
 app.use(
   cors({
     origin: (origin, cb) => {
-      // allow curl/postman (no origin)
       if (!origin) return cb(null, true);
 
-      if (allowedOrigins.includes(origin)) return cb(null, true);
+      const isLocalhost = origin === "http://localhost:5173";
+      const isVercelPreview =
+        origin.endsWith(".vercel.app") &&
+        origin.includes("parameswar-pradhans-projects");
+
+      const isExactClient = origin === process.env.CLIENT_URL;
+
+      if (isLocalhost || isExactClient || isVercelPreview) {
+        return cb(null, true);
+      }
 
       return cb(new Error("CORS blocked for origin: " + origin), false);
     },
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: false,
   })
 );
 
-
-
-// ✅ Preflight
 app.options(/.*/, cors());
 
 // ✅ Routes
